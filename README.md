@@ -20,22 +20,22 @@ Here's the template:
 *******************************************************************************
 ### What organization or people are asking to have this signed?
 *******************************************************************************
-[your text here]
+CIQ Inc.  ( https://ciq.co )
 
 *******************************************************************************
 ### What product or service is this for?
 *******************************************************************************
-[your text here]
+CIQ provides enhancements to, and customizations around Rocky Linux for our customers.  We are especially interested in customized/improved Linux kernel builds, along with packaging and providing extra drivers.
 
 *******************************************************************************
 ### What's the justification that this really does need to be signed for the whole world to be able to boot it?
 *******************************************************************************
-[your text here]
+Our customers use a variety of hardware platforms.  Many of them have policies in place, or are contractually obligated in some way to use the default EFI firmware with no customized secureboot/MOK key injection.  At the same time, many customers require some modification from the stock Rocky / RHEL kernel, mostly around the area of security backports (supporting older minor versions), or a newer kernel customized for their workload.
 
 *******************************************************************************
 ### Why are you unable to reuse shim from another distro that is already signed?
 *******************************************************************************
-[your text here]
+We need these customized kernels to boot properly in customer environments.  This is not possible with the stock Rocky Linux (or RHEL) shim binary.
 
 *******************************************************************************
 ### Who is the primary contact for security updates, etc.?
@@ -44,10 +44,11 @@ The security contacts need to be verified before the shim can be accepted. For s
 An authorized reviewer will initiate contact verification by sending each security contact a PGP-encrypted email containing random words.
 You will be asked to post the contents of these mails in your `shim-review` issue to prove ownership of the email addresses and PGP keys.
 *******************************************************************************
-- Name:
-- Position:
-- Email address:
-- PGP key fingerprint:
+- Name: Skip Grube
+- Position: Engineer
+- Email address: sgrube@ciq.co
+- PGP key fingerprint: F58E D7A0 91B6 E50D E7CA EB07 D391 F839 3BEA 6D9C
+- PGP key available on keyserver.ubuntu.com and keys.openpgp.org
 
 (Key should be signed by the other security contacts, pushed to a keyserver
 like keyserver.ubuntu.com, and preferably have signatures that are reasonably
@@ -56,10 +57,10 @@ well known in the Linux community.)
 *******************************************************************************
 ### Who is the secondary contact for security updates, etc.?
 *******************************************************************************
-- Name:
-- Position:
-- Email address:
-- PGP key fingerprint:
+- Name: Michael Young
+- Position: Information Technology Director
+- Email address: myoung@ciq.co
+- PGP key fingerprint:  CD82 9808 7BCA C022 B5EC  84FA D84A 6A59 1392 6D2B
 
 (Key should be signed by the other security contacts, pushed to a keyserver
 like keyserver.ubuntu.com, and preferably have signatures that are reasonably
@@ -72,12 +73,12 @@ Please create your shim binaries starting with the 15.7 shim release tar file: h
 This matches https://github.com/rhboot/shim/releases/tag/15.7 and contains the appropriate gnu-efi source.
 
 *******************************************************************************
-[your text here]
+Yes, our binaries are created from the 15.7 release.  The spec file for RPM build is based heavily on the upstream Rocky/RHEL shim-unsigned-x64.
 
 *******************************************************************************
 ### URL for a repo that contains the exact code which was built to get this binary:
 *******************************************************************************
-[your url here]
+
 
 *******************************************************************************
 ### What patches are being applied and why:
@@ -87,7 +88,7 @@ This matches https://github.com/rhboot/shim/releases/tag/15.7 and contains the a
 *******************************************************************************
 ### If shim is loading GRUB2 bootloader what exact implementation of Secureboot in GRUB2 do you have? (Either Upstream GRUB2 shim_lock verifier or Downstream RHEL/Fedora/Debian/Canonical-like implementation)
 *******************************************************************************
-[your text here]
+We intend to use the Rocky 8 + 9 (RHEL 8 + 9) GRUB2 source code unmodified, as our projects have no need to change from our upstream.  The RHEL implementation is what we're using.
 
 *******************************************************************************
 ### If shim is loading GRUB2 bootloader and your previously released shim booted a version of grub affected by any of the CVEs in the July 2020 grub2 CVE list, the March 2021 grub2 CVE list, the June 7th 2022 grub2 CVE list, or the November 15th 2022 list, have fixes for all these CVEs been applied?
@@ -99,6 +100,7 @@ This matches https://github.com/rhboot/shim/releases/tag/15.7 and contains the a
 * CVE-2020-27779
 * CVE-2021-20225
 * CVE-2021-20233
+
 * CVE-2020-10713
 * CVE-2020-14308
 * CVE-2020-14309
@@ -119,18 +121,23 @@ This matches https://github.com/rhboot/shim/releases/tag/15.7 and contains the a
 * CVE-2022-2601
 * CVE-2022-3775
 *******************************************************************************
-[your text here]
+We are a new vendor, and this is our first submission.  But I can confirm that our grub2 builds will not be affected by any of those, as they've all been fixed in our upstream:
+
+https://git.rockylinux.org/staging/rpms/grub2/-/blob/r9/SPECS/grub2.spec#L536
+
+https://git.rockylinux.org/staging/rpms/grub2/-/blob/r8/SPECS/grub2.spec#L511
+
 
 *******************************************************************************
 ### If these fixes have been applied, have you set the global SBAT generation on your GRUB binary to 3?
 *******************************************************************************
-[your text here]
+We have not, as we are a new vendor.  Our release should exactly match the Rocky and RHEL equivalents.
 
 *******************************************************************************
 ### Were old shims hashes provided to Microsoft for verification and to be added to future DBX updates?
 ### Does your new chain of trust disallow booting old GRUB2 builds affected by the CVEs?
 *******************************************************************************
-[your text here]
+This is our first submission, we have no older shims.
 
 *******************************************************************************
 ### If your boot chain of trust includes a Linux kernel:
@@ -138,98 +145,126 @@ This matches https://github.com/rhboot/shim/releases/tag/15.7 and contains the a
 ### Is upstream commit [75b0cea7bf307f362057cc778efe89af4c615354 "ACPI: configfs: Disallow loading ACPI tables when locked down"](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=75b0cea7bf307f362057cc778efe89af4c615354) applied?
 ### Is upstream commit [eadb2f47a3ced5c64b23b90fd2a3463f63726066 "lockdown: also lock down previous kgdb use"](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eadb2f47a3ced5c64b23b90fd2a3463f63726066) applied?
 *******************************************************************************
-[your text here]
+Yes, all of these patches are in the Rocky 8 + 9 kernels we plan to base on, as well as the LT kernel branches we intend to build and sign.
 
 *******************************************************************************
 ### Do you build your signed kernel with additional local patches? What do they do?
 *******************************************************************************
-[your text here]
+Generally we'll be performing 2 sorts of mofifications:
+
+1: Backport fixes (and especially security updates) to continue long-term support of a previous Rocky Linux release.  For example, further backports to the Rocky/RHEL 8.6 kernel (kernel-4.18.0-372) to keep it updated for customers.
+
+2: Builds of recent mainline (ML) and longterm (LT) upstream kernel releases designed for installation on Rocky Linux.  Different variants are planned with compile-time configuration tweaks, especially around enhancing high performance computing (HPC) applications.
 
 *******************************************************************************
 ### If you use vendor_db functionality of providing multiple certificates and/or hashes please briefly describe your certificate setup.
 ### If there are allow-listed hashes please provide exact binaries for which hashes are created via file sharing service, available in public with anonymous access for verification.
 *******************************************************************************
-[your text here]
+TODO
 
 *******************************************************************************
 ### If you are re-using a previously used (CA) certificate, you will need to add the hashes of the previous GRUB2 binaries exposed to the CVEs to vendor_dbx in shim in order to prevent GRUB2 from being able to chainload those older GRUB2 binaries. If you are changing to a new (CA) certificate, this does not apply.
 ### Please describe your strategy.
 *******************************************************************************
-[your text here]
+Our CA and shim are new.
 
 *******************************************************************************
 ### What OS and toolchain must we use to reproduce this build?  Include where to find it, etc.  We're going to try to reproduce your build as closely as possible to verify that it's really a build of the source tree you tell us it is, so these need to be fairly thorough. At the very least include the specific versions of gcc, binutils, and gnu-efi which were used, and where to find those binaries.
 ### If the shim binaries can't be reproduced using the provided Dockerfile, please explain why that's the case and what the differences would be.
 *******************************************************************************
-[your text here]
+This build is all Rocky 8 dependencies, using rpmbuild.
+
+To ensure reproducibility, I have "frozen" all the dependent Rocky 8 packages needed and put them in their own repository.  It can be found in teh builder's Dockerfile.
+
+Using a tagged container base plus this repository should ensure binaries are 100% reproducible.
+
 
 *******************************************************************************
 ### Which files in this repo are the logs for your build?
 This should include logs for creating the buildroots, applying patches, doing the build, creating the archives, etc.
 *******************************************************************************
-[your text here]
+TODO
 
 *******************************************************************************
 ### What changes were made since your SHIM was last signed?
 *******************************************************************************
-[your text here]
+N/A
 
 *******************************************************************************
 ### What is the SHA256 hash of your final SHIM binary?
 *******************************************************************************
-[your text here]
+TBD after CA comes in
 
 *******************************************************************************
 ### How do you manage and protect the keys used in your SHIM?
 *******************************************************************************
-[your text here]
+- Private key for CA is kept in offline vault by default
+- Private keys for child certificates stored on HSM in a FIPS-140-2 environment for signing
+- Private keys are not exportable from HSM by design
+- Key backups are also kept in secure vault
 
 *******************************************************************************
 ### Do you use EV certificates as embedded certificates in the SHIM?
 *******************************************************************************
-[your text here]
+No, only the CIQ secureboot CA is embedded in our Shim
 
 *******************************************************************************
 ### Do you add a vendor-specific SBAT entry to the SBAT section in each binary that supports SBAT metadata ( grub2, fwupd, fwupdate, shim + all child shim binaries )?
 ### Please provide exact SBAT entries for all SBAT binaries you are booting or planning to boot directly through shim.
 ### Where your code is only slightly modified from an upstream vendor's, please also preserve their SBAT entries to simplify revocation.
 *******************************************************************************
-[your text here]
+TODO: just kernel + shim?
+
+Grub2 + Fwupd should be unchanged from upstream Rocky versions
 
 *******************************************************************************
 ### Which modules are built into your signed grub image?
 *******************************************************************************
-[your text here]
+TODO:
 
 *******************************************************************************
 ### What is the origin and full version number of your bootloader (GRUB or other)?
 *******************************************************************************
-[your text here]
+For Rocky 9 base: 
+  - grub2-2.06 base version
+  - grub2-2.06-46.el9_1.5 full version
+
+For Rocky 8 base:
+  - grub2-2.02 base version
+  - grub2-2.02-142.el8_7.3 full version
+  
+(We plan to track security updates from upstream when building Grub)
 
 *******************************************************************************
 ### If your SHIM launches any other components, please provide further details on what is launched.
 *******************************************************************************
-[your text here]
+We have successfully packaged and tested certmule, signed by us and containing the Rocky Linux secureboot CA.  This would simplify our development, as the grub2 + fwupd upstream packages could be used as-is, without the need for recompilation or re-signing.
+
+TODO:
+Our certmule package source is:  TODO
 
 *******************************************************************************
 ### If your GRUB2 launches any other binaries that are not the Linux kernel in SecureBoot mode, please provide further details on what is launched and how it enforces Secureboot lockdown.
 *******************************************************************************
-[your text here]
+No, Linux kernel is all we are interested in
 
 *******************************************************************************
 ### How do the launched components prevent execution of unauthenticated code?
 *******************************************************************************
-[your text here]
+In the case of the kernel, both the RHEL variant and the upstream ("new") variants prevent this by default, and we do not want to change that.
+
+In the case of Grub + Fwupd, we will be running the same Rocky/RHEL versions unmodified, which also do not execute unauthenticated code by default.
 
 *******************************************************************************
 ### Does your SHIM load any loaders that support loading unsigned kernels (e.g. GRUB)?
 *******************************************************************************
-[your text here]
+Grub will load unsigned kernels, but only with secureboot mode turned off on an end-user's system.
 
 *******************************************************************************
 ### What kernel are you using? Which patches does it includes to enforce Secure Boot?
 *******************************************************************************
-[your text here]
+We are using our RHEL upstream variants: 4.18 and 5.14 with minor patches.
+(TODO)
 
 *******************************************************************************
 ### Add any additional information you think we may need to validate this shim.
