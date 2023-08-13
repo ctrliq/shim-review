@@ -20,7 +20,7 @@ Here's the template:
 *******************************************************************************
 ### What organization or people are asking to have this signed?
 *******************************************************************************
-CIQ Inc.  ( https://ciq.co )
+CIQ Inc.  ( https://ciq.com )
 
 *******************************************************************************
 ### What product or service is this for?
@@ -70,12 +70,13 @@ well known in the Linux community.)
 ### Were these binaries created from the 15.7 shim release tar?
 Please create your shim binaries starting with the 15.7 shim release tar file: https://github.com/rhboot/shim/releases/download/15.7/shim-15.7.tar.bz2
 
-We are adding the relevant enable-NX-by-default patch to this code:  https://github.com/rhboot/shim/pull/530
-
 This matches https://github.com/rhboot/shim/releases/tag/15.7 (plus the NX patch) and contains the appropriate gnu-efi source.
 
+******************************************************************************
+Yes.  We are adding the relevant enable-NX-by-default patch to this code:  https://github.com/rhboot/shim/pull/530
 
-*******************************************************************************
+
+
 
 
 *******************************************************************************
@@ -83,10 +84,9 @@ This matches https://github.com/rhboot/shim/releases/tag/15.7 (plus the NX patch
 *******************************************************************************
 CIQ shim-unsigned-x64 RPM repository:  https://bitbucket.org/ciqinc/shim-unsigned-x64/src/ciq8/
 
-
 This code is a combination of:  https://github.com/rhboot/shim/releases/download/15.7/shim-15.7.tar.bz2 , NX patch https://github.com/rhboot/shim/pull/530 , and an RPM spec file derived from the Rocky (and in turn RHEL) one.
 
-Additionally, I have a "frozen" repository copy of the Mock buildroot and build dependencies (gcc, openssl, et al.) here:  https://rl-secure-boot.ewr1.vultrobjects.com/repos/shim_review_deps/
+Additionally, I have a "frozen" repository copy of the Mock buildroot and build dependencies (gcc, openssl, et al.) here:  https://rl-secure-boot.ewr1.vultrobjects.com/repos/shim_review_deps/  (this gets used by Mock as a source of RPM dependencies)
 
 Using this repository (consisting of public Rocky 8 RPMs) ensures a reproducible binary when building the shim-unsigned-x64 with mock (or Docker/Podman) and rpmbuild.
 
@@ -107,7 +107,7 @@ This is to align with updated Microsoft requirements ( https://techcommunity.mic
 *******************************************************************************
 ### If shim is loading GRUB2 bootloader what exact implementation of Secureboot in GRUB2 do you have? (Either Upstream GRUB2 shim_lock verifier or Downstream RHEL/Fedora/Debian/Canonical-like implementation)
 *******************************************************************************
-We intend to use the Rocky 8 + 9 (based on RHEL 8 + 9) GRUB2 source code unmodified, as our projects have no need to change from our upstream.  The Rocky/RHEL Grub versions are what we are using.
+We intend to use the Rocky 8 + 9 (based on RHEL 8 + 9) GRUB2 source code unmodified, as our projects have no need to change from our upstream.  The Rocky/RHEL Grub versions (and their patches) are what we are using.
 
 *******************************************************************************
 ### If shim is loading GRUB2 bootloader and your previously released shim booted a version of grub affected by any of the CVEs in the July 2020 grub2 CVE list, the March 2021 grub2 CVE list, the June 7th 2022 grub2 CVE list, or the November 15th 2022 list, have fixes for all these CVEs been applied?
@@ -166,6 +166,8 @@ This is our first submission, we have no older shims.
 *******************************************************************************
 Yes, all of these patches are in the Rocky 8 + 9 kernels we plan to base on, as well as the LT kernel branches we intend to build and sign.
 
+(TODO:  Check against https://github.com/EuroLinux/shim-review/tree/eurolinux-shim-x86_64-20230517#if-your-boot-chain-of-trust-includes-a-linux-kernel )
+
 *******************************************************************************
 ### Do you build your signed kernel with additional local patches? What do they do?
 *******************************************************************************
@@ -174,6 +176,10 @@ Generally we'll be performing 2 sorts of mofifications:
 1: Backport fixes (and especially security updates) to continue long-term support of a previous Rocky Linux release.  For example, further backports to the Rocky/RHEL 8.6 kernel (kernel-4.18.0-372) to keep it updated for customers.
 
 2: Builds of recent mainline (ML) and longterm (LT) upstream kernel releases designed for installation on Rocky Linux.  Different variants are planned with compile-time configuration tweaks, especially around enhancing high performance computing (HPC) applications.
+
+TODO:  Check nx-compat kernel patch
+
+
 
 *******************************************************************************
 ### If you use vendor_db functionality of providing multiple certificates and/or hashes please briefly describe your certificate setup.
@@ -191,13 +197,13 @@ Our CA and shim are new.
 ### What OS and toolchain must we use to reproduce this build?  Include where to find it, etc.  We're going to try to reproduce your build as closely as possible to verify that it's really a build of the source tree you tell us it is, so these need to be fairly thorough. At the very least include the specific versions of gcc, binutils, and gnu-efi which were used, and where to find those binaries.
 ### If the shim binaries can't be reproduced using the provided Dockerfile, please explain why that's the case and what the differences would be.
 *******************************************************************************
-This build is all Rocky 8 dependencies, using rpmbuild.
+This build is all Rocky 8.8 dependencies, using rpmbuild.
 
 To ensure reproducibility, I have "frozen" all the dependent Rocky 8 packages needed and put them in their own repository.  It can be found in the builder's Dockerfile.
 
 Using a tagged container base plus this repository should ensure binaries are 100% reproducible.
 
-(TODO: Update this?) Current reproducible shim build location:  https://bitbucket.org/ciqinc/ciq-shim-build
+Current reproducible shim build location:  https://bitbucket.org/ciqinc/ciq-shim-build
 
 
 *******************************************************************************
@@ -222,7 +228,7 @@ TODO: TBD after CA comes in
 - Private key for CA is kept in offline vault by default
 - Private keys for child certificates stored on HSM in a FIPS-140-2 environment for signing
 - Private keys are not exportable from HSM by design
-- Key backups are also kept in secure vault
+- Key backups are also kept in secure offline vault
 
 *******************************************************************************
 ### Do you use EV certificates as embedded certificates in the SHIM?
