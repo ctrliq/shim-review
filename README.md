@@ -168,16 +168,15 @@ This is our first submission, we have no older shims.
 ### Is upstream commit [75b0cea7bf307f362057cc778efe89af4c615354 "ACPI: configfs: Disallow loading ACPI tables when locked down"](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=75b0cea7bf307f362057cc778efe89af4c615354) applied?
 ### Is upstream commit [eadb2f47a3ced5c64b23b90fd2a3463f63726066 "lockdown: also lock down previous kgdb use"](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eadb2f47a3ced5c64b23b90fd2a3463f63726066) applied?
 *******************************************************************************
-Yes, all of these patches are in the Rocky 8 + 9 kernels we plan to base on, as well as the LT kernel branches we intend to build and sign.
+Yes, all of these patches are already in the Rocky/RHEL 8 + 9 kernels we plan to base on.
 
-(TODO:  Check against https://github.com/EuroLinux/shim-review/tree/eurolinux-shim-x86_64-20230517#if-your-boot-chain-of-trust-includes-a-linux-kernel )
 
 *******************************************************************************
 ### Do you build your signed kernel with additional local patches? What do they do?
 *******************************************************************************
 Generally we'll be performing 2 sorts of mofifications:
 
-- Backport fixes (and especially security updates) to continue long-term support of a previous Rocky Linux release.  For example, further backports to the Rocky/RHEL 8.6 kernel (kernel-4.18.0-372) to keep it updated for customers.
+- Fixes and enhancements (especially security updates) to continue long-term support of a previous Rocky Linux release.  For example, further backports to the Rocky/RHEL 8.6 kernel (kernel-4.18.0-372) to keep it updated for customers, or FIPS enhancements/restrictions for those that require compliance.
 
 - Builds of recent mainline (ML) and longterm (LT) upstream kernel releases designed for installation on Rocky Linux.  Different variants are planned with compile-time configuration tweaks, especially around enhancing high performance computing (HPC) applications.
 
@@ -271,6 +270,26 @@ usbserial_pl2303 usbserial_ftdi usbserial_usbdebug keylayouts
 at_keyboard
 ```
 
+Rocky 9 / Grub 2.06-61 :
+```
+efinet lsefi lsefimmap connectefi 
+backtrace chain all_video boot 
+blscfg btrfs cat configfile 
+cryptodisk echo ext2 fat 
+font gcry_rijndael gcry_rsa gcry_serpent gcry_sha256 
+gcry_twofish gcry_whirlpool gfxmenu gfxterm 
+gzio halt hfsplus http 
+increment iso9660 jpeg loadenv
+loopback linux lvm luks 
+mdraid09 mdraid1x minicmd net 
+normal part_apple part_msdos part_gpt 
+password_pbkdf2 png reboot regexp 
+search search_fs_uuid search_fs_file search_label serial 
+sleep syslinuxcfg test tftp 
+video xfs efi_netfs efifwsetup
+usb usbserial_common usbserial_pl2303 usbserial_ftdi 
+usbserial_usbdebug keylayouts at_keyboard
+```
 
 *******************************************************************************
 ### What is the origin and full version number of your bootloader (GRUB or other)?
@@ -309,12 +328,12 @@ In the case of Grub + Fwupd, we will be running the same Rocky/RHEL versions unm
 *******************************************************************************
 ### Does your SHIM load any loaders that support loading unsigned kernels (e.g. GRUB)?
 *******************************************************************************
-Grub will load unsigned kernels, but only with secureboot mode turned off on an end-user's system.
+Grub2 will only load unsigned code if the secureboot feature is turned off  load unsigned kernels, but only with secureboot mode turned off on an end-user's system.
 
 *******************************************************************************
 ### What kernel are you using? Which patches does it includes to enforce Secure Boot?
 *******************************************************************************
-We are using our RHEL upstream variants: 4.18 and 5.14 with minor patches.
+We are using our RHEL upstream variants: 4.18 and 5.14 with minor patches (on top of the many patches from Red Hat and others).
 
 We are also building and packaging supported upstream kernels designed for use on Rocky and enterprise-Linux variants.  These include supported LT versions (5.4, 5.10, 5.15, 6.1), as well as the rollling latest-stable version.
 
@@ -323,4 +342,8 @@ I understand that these all enforce secure boot "out of the box".
 *******************************************************************************
 ### Add any additional information you think we may need to validate this shim.
 *******************************************************************************
-[your text here]
+No extra info, just some questions about using certwrapper/certmule to trust upstream distro components. (I like the "mule" name better ;-) )  Can't find this being used or approved in other reviews, but it's very interesting.  We're maintaining the beginnings of an RPM, and it's definitely something that should find its way into distros!
+
+
+
+
